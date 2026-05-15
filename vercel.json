@@ -1,25 +1,22 @@
 {
   "version": 2,
-  "outputDirectory": "frontend/dist",
   "rewrites": [
     {
       "source": "/api/chess/:username",
-      "destination": "/api/chess.js?username=:username"
+      "destination": "/frontend/api/chess.js?username=:username"
     },
     {
       "source": "/api/chess",
-      "destination": "/api/chess.js"
+      "destination": "/frontend/api/chess.js"
     },
     {
       "source": "/(.*)",
-      "destination": "/index.html"
+      "destination": "/frontend/dist/$1",
+      "check": true
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/frontend/dist/index.html"
     }
-  ],
-  "functions": {
-    "api/chess.js": {
-      "runtime": "vercel-node@latest",
-      "memory": 1024,
-      "maxDuration": 20
-    }
-  }
+  ]
 }
