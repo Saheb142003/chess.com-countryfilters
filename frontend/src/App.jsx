@@ -1,7 +1,9 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import axios from "axios";
 import CountryFilter from "./components/CountryFilter";
 import GameList from "./components/GameList";
+
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
 function App() {
   const [username, setUsername] = useState("");
@@ -12,6 +14,25 @@ function App() {
   const [opponentQuery, setOpponentQuery] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [serverReady, setServerReady] = useState(false);
+
+  useEffect(() => {
+    let interval;
+    const checkServer = async () => {
+      try {
+        await axios.get(`${API_URL}/`);
+        setServerReady(true);
+        if (interval) clearInterval(interval);
+      } catch (err) {
+        console.log("Waiting for server to wake up...");
+      }
+    };
+    
+    checkServer();
+    interval = setInterval(checkServer, 3000);
+
+    return () => clearInterval(interval);
+  }, []);
 
   const fetchGames = async () => {
     if (!username) return;
@@ -23,7 +44,7 @@ function App() {
     setOpponentQuery("");
     try {
       const res = await axios.get(
-        `http://localhost:5000/api/chess/${username}`
+        `${API_URL}/api/chess/${username}`
       );
       setData(res.data);
       if (Object.keys(res.data).length === 0) {
@@ -73,7 +94,15 @@ function App() {
         <h1 className="title">Chess.com <span>Analysis</span></h1>
       </header>
 
-      <div className="search-box">
+      {!serverReady ? (
+        <div className="loader-box" style={{ marginTop: '4rem' }}>
+          <div className="chess-loader"></div>
+          <p style={{ fontWeight: '600' }}>Waking up server...</p>
+          <p style={{ fontSize: '0.9rem', color: 'var(--text-muted)' }}>This may take up to 50 seconds on free hosting.</p>
+        </div>
+      ) : (
+        <>
+          <div className="search-box">
         <input
           type="text"
           placeholder="Chess.com Username"
@@ -145,6 +174,8 @@ function App() {
         <div style={{ textAlign: 'center', color: 'var(--text-muted)', marginTop: '4rem' }}>
           <p>Enter a username to analyze their global performance.</p>
         </div>
+      )}
+        </>
       )}
     </div>
   );
