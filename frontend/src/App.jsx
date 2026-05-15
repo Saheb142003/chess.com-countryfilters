@@ -14,9 +14,13 @@ function App() {
   const [opponentQuery, setOpponentQuery] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [serverReady, setServerReady] = useState(false);
+  const [serverReady, setServerReady] = useState(
+    API_URL.includes("localhost") || API_URL.includes("127.0.0.1")
+  );
 
   useEffect(() => {
+    if (serverReady) return;
+
     let interval;
     const checkServer = async () => {
       try {
@@ -32,7 +36,7 @@ function App() {
     interval = setInterval(checkServer, 3000);
 
     return () => clearInterval(interval);
-  }, []);
+  }, [serverReady]);
 
   const fetchGames = async () => {
     if (!username) return;

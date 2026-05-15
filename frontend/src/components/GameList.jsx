@@ -48,7 +48,14 @@ function GameList({ games, selectedCountry, selectedResult }) {
             const ratingSign = game.ratingChange > 0 ? '+' : '';
 
             return (
-              <div className="game-card" key={index}>
+              <a 
+                href={game.url} 
+                target="_blank" 
+                rel="noreferrer" 
+                className="game-card" 
+                key={index}
+                style={{ textDecoration: 'none', display: 'block' }}
+              >
                 <div className="game-header">
                   <div className="opponent-box">
                     <div className={`game-result-indicator ${indicatorClass}`}>
@@ -56,7 +63,7 @@ function GameList({ games, selectedCountry, selectedResult }) {
                     </div>
                     <div>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <span style={{ fontSize: '1.1rem', fontWeight: '700' }}>{game.opponent}</span>
+                        <span style={{ fontSize: '1.1rem', fontWeight: '700', color: 'var(--text-main)' }}>{game.opponent}</span>
                         <span className="rating-badge">({game.opponentRating})</span>
                       </div>
                       <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '2px' }}>
@@ -67,7 +74,7 @@ function GameList({ games, selectedCountry, selectedResult }) {
                   
                   <div style={{ textAlign: 'right' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px', justifyContent: 'flex-end' }}>
-                      <span style={{ fontSize: '1rem', fontWeight: '800' }}>{game.userRating}</span>
+                      <span style={{ fontSize: '1rem', fontWeight: '800', color: 'var(--text-main)' }}>{game.userRating}</span>
                       {game.ratingChange !== null && (
                         <span style={{ fontSize: '0.85rem', fontWeight: '700', color: ratingChangeColor }}>
                           {ratingSign}{game.ratingChange}
@@ -80,15 +87,20 @@ function GameList({ games, selectedCountry, selectedResult }) {
                   </div>
                 </div>
 
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '0.5rem' }}>
+                <div style={{ marginTop: '0.75rem', padding: '0.5rem 0.75rem', background: 'rgba(255,255,255,0.03)', borderRadius: '6px' }}>
+                   <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginBottom: '2px', textTransform: 'uppercase', fontWeight: '700' }}>Opening</div>
+                   <div style={{ fontSize: '0.85rem', color: 'var(--accent)', fontWeight: '600' }}>{game.opening}</div>
+                </div>
+
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '0.75rem' }}>
                   <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
                     Result: <span style={{ color: 'var(--text-main)', fontWeight: '600' }}>{game.result}</span>
                   </div>
-                  <a href={game.url} target="_blank" rel="noreferrer" className="view-btn">
-                    Analysis
-                  </a>
+                  <div className="view-btn" style={{ fontSize: '0.75rem' }}>
+                    Click to Analyze ↗
+                  </div>
                 </div>
-              </div>
+              </a>
             );
           })}
         </div>

@@ -13,6 +13,7 @@
   --danger: #fa312d;
   --card-bg: #262421;
   --card-hover: #3c3934;
+  --accent: #81b64c;
 }
 
 * {
@@ -235,7 +236,13 @@ body {
 
 .game-card:hover {
   background: var(--card-hover);
-  border-color: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.1);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+}
+
+.game-card:hover .view-btn {
+  background: var(--accent-green);
 }
 
 .game-header {

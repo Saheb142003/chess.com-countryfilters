@@ -89,6 +89,10 @@ export async function fetchGamesByCountry(username) {
     const country = countryCache.get(opponent) || "Unknown";
     const userResultCode = isWhite ? game.white.result : game.black.result;
     
+    // Extract Opening from PGN
+    const openingMatch = game.pgn?.match(/\[Opening "(.*?)"\]/);
+    const opening = openingMatch ? openingMatch[1] : "Unknown Opening";
+    
     allGames.push({
       opponent,
       country,
@@ -97,6 +101,7 @@ export async function fetchGamesByCountry(username) {
       opponentRating,
       ratingChange,
       timeClass,
+      opening,
       date: new Date(game.end_time * 1000).toLocaleDateString('en-GB', {
         day: '2-digit',
         month: 'short',

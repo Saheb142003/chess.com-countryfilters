@@ -162,7 +162,12 @@ function CountryFilter({ countries, selectedCountry, setSelectedCountry, gameDat
             onClick={() => setSelectedCountry("")}
           >
             <div className="flag-box">🌍</div>
-            <span className="country-name">Global Origin</span>
+            <div style={{ flex: 1 }}>
+              <span className="country-name">Global Origin</span>
+              <div style={{ fontSize: '0.65rem', color: 'var(--text-muted)', fontWeight: '600', textTransform: 'uppercase' }}>
+                {countries.length} Regions
+              </div>
+            </div>
             <span style={{ fontSize: '0.75rem', fontWeight: '700', color: 'var(--text-muted)' }}>{allGames.length}</span>
           </div>
           
