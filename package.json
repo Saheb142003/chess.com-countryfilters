@@ -6,17 +6,13 @@
   "engines": {
     "node": ">=18.0.0"
   },
-  "workspaces": [
-    "frontend",
-    "backend"
-  ],
   "scripts": {
-    "build": "npm run build --workspace=frontend && mkdir -p dist && cp -r frontend/dist/* dist/"
+    "build": "cd frontend && npm install && npm run build"
   },
   "dependencies": {
-    "axios": "^1.16.1",
+    "axios": "^1.9.0",
     "cors": "^2.8.6",
-    "express": "^5.2.1",
+    "express": "^4.21.2",
     "dotenv": "^16.4.5"
   }
 }
