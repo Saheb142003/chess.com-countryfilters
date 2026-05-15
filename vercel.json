@@ -1,21 +1,25 @@
 {
   "version": 2,
   "outputDirectory": "dist",
-  "functions": {
-    "api/index.js": {
-      "runtime": "vercel-node@latest",
-      "memory": 1024,
-      "maxDuration": 10
-    }
-  },
   "rewrites": [
     {
-      "source": "/api/(.*)",
-      "destination": "/api"
+      "source": "/api/chess/:username",
+      "destination": "/api/chess.js?username=:username"
+    },
+    {
+      "source": "/api/chess",
+      "destination": "/api/chess.js"
     },
     {
       "source": "/(.*)",
       "destination": "/index.html"
     }
-  ]
+  ],
+  "functions": {
+    "api/chess.js": {
+      "runtime": "vercel-node@latest",
+      "memory": 1024,
+      "maxDuration": 20
+    }
+  }
 }
