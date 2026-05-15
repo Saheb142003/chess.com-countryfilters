@@ -89,9 +89,19 @@ export async function fetchGamesByCountry(username) {
     const country = countryCache.get(opponent) || "Unknown";
     const userResultCode = isWhite ? game.white.result : game.black.result;
     
-    // Extract Opening from PGN
-    const openingMatch = game.pgn?.match(/\[Opening "(.*?)"\]/);
-    const opening = openingMatch ? openingMatch[1] : "Unknown Opening";
+    // Extract Opening from PGN (More robust regex)
+    let opening = "Standard Opening";
+    if (game.pgn) {
+      const openingMatch = game.pgn.match(/\[Opening\s+"(.*?)"\]/);
+      const ecoUrlMatch = game.pgn.match(/\[ECOUrl\s+"https:\/\/www\.chess\.com\/openings\/(.*?)"\]/);
+      
+      if (openingMatch && openingMatch[1] && openingMatch[1] !== "Unknown Opening") {
+        opening = openingMatch[1];
+      } else if (ecoUrlMatch && ecoUrlMatch[1]) {
+        // Convert URL-slug (Sicilian-Defense) to readable name (Sicilian Defense)
+        opening = ecoUrlMatch[1].split('/').pop().replace(/-/g, ' ');
+      }
+    }
     
     allGames.push({
       opponent,
@@ -102,6 +112,7 @@ export async function fetchGamesByCountry(username) {
       ratingChange,
       timeClass,
       opening,
+      fen: game.fen,
       date: new Date(game.end_time * 1000).toLocaleDateString('en-GB', {
         day: '2-digit',
         month: 'short',

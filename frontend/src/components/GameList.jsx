@@ -54,50 +54,60 @@ function GameList({ games, selectedCountry, selectedResult }) {
                 rel="noreferrer" 
                 className="game-card" 
                 key={index}
-                style={{ textDecoration: 'none', display: 'block' }}
+                style={{ textDecoration: 'none', display: 'flex', gap: '1.25rem', padding: '1rem' }}
               >
-                <div className="game-header">
-                  <div className="opponent-box">
-                    <div className={`game-result-indicator ${indicatorClass}`}>
-                      {indicatorLabel}
-                    </div>
-                    <div>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <span style={{ fontSize: '1.1rem', fontWeight: '700', color: 'var(--text-main)' }}>{game.opponent}</span>
-                        <span className="rating-badge">({game.opponentRating})</span>
-                      </div>
-                      <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '2px' }}>
-                        Against {game.country.replace(/-/g, ' ')} • {game.date}
-                      </div>
-                    </div>
-                  </div>
-                  
-                  <div style={{ textAlign: 'right' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', justifyContent: 'flex-end' }}>
-                      <span style={{ fontSize: '1rem', fontWeight: '800', color: 'var(--text-main)' }}>{game.userRating}</span>
-                      {game.ratingChange !== null && (
-                        <span style={{ fontSize: '0.85rem', fontWeight: '700', color: ratingChangeColor }}>
-                          {ratingSign}{game.ratingChange}
-                        </span>
-                      )}
-                    </div>
-                    <div style={{ fontSize: '0.7rem', fontWeight: '700', color: 'var(--text-muted)', textTransform: 'uppercase', marginTop: '4px' }}>
-                      {game.timeClass}
-                    </div>
-                  </div>
+                <div className="board-preview">
+                  <img 
+                    src={`https://www.chess.com/dynboard?fen=${game.fen}&size=1&board=green&piece=neo`} 
+                    alt="Final Position"
+                    loading="lazy"
+                  />
                 </div>
 
-                <div style={{ marginTop: '0.75rem', padding: '0.5rem 0.75rem', background: 'rgba(255,255,255,0.03)', borderRadius: '6px' }}>
-                   <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginBottom: '2px', textTransform: 'uppercase', fontWeight: '700' }}>Opening</div>
-                   <div style={{ fontSize: '0.85rem', color: 'var(--accent)', fontWeight: '600' }}>{game.opening}</div>
-                </div>
-
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '0.75rem' }}>
-                  <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
-                    Result: <span style={{ color: 'var(--text-main)', fontWeight: '600' }}>{game.result}</span>
+                <div style={{ flex: 1 }}>
+                  <div className="game-header">
+                    <div className="opponent-box">
+                      <div className={`game-result-indicator ${indicatorClass}`}>
+                        {indicatorLabel}
+                      </div>
+                      <div>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                          <span style={{ fontSize: '1.1rem', fontWeight: '700', color: 'var(--text-main)' }}>{game.opponent}</span>
+                          <span className="rating-badge">({game.opponentRating})</span>
+                        </div>
+                        <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '2px' }}>
+                          Against {game.country.replace(/-/g, ' ')} • {game.date}
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div style={{ textAlign: 'right' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', justifyContent: 'flex-end' }}>
+                        <span style={{ fontSize: '1rem', fontWeight: '800', color: 'var(--text-main)' }}>{game.userRating}</span>
+                        {game.ratingChange !== null && (
+                          <span style={{ fontSize: '0.85rem', fontWeight: '700', color: ratingChangeColor }}>
+                            {ratingSign}{game.ratingChange}
+                          </span>
+                        )}
+                      </div>
+                      <div style={{ fontSize: '0.7rem', fontWeight: '700', color: 'var(--text-muted)', textTransform: 'uppercase', marginTop: '4px' }}>
+                        {game.timeClass}
+                      </div>
+                    </div>
                   </div>
-                  <div className="view-btn" style={{ fontSize: '0.75rem' }}>
-                    Click to Analyze ↗
+
+                  <div style={{ marginTop: '0.75rem', padding: '0.5rem 0.75rem', background: 'rgba(255,255,255,0.03)', borderRadius: '6px' }}>
+                    <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginBottom: '2px', textTransform: 'uppercase', fontWeight: '700' }}>Opening</div>
+                    <div style={{ fontSize: '0.85rem', color: 'var(--accent)', fontWeight: '600' }}>{game.opening}</div>
+                  </div>
+
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '0.75rem' }}>
+                    <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
+                      Result: <span style={{ color: 'var(--text-main)', fontWeight: '600' }}>{game.result}</span>
+                    </div>
+                    <div className="view-btn" style={{ fontSize: '0.75rem' }}>
+                      Analyze ↗
+                    </div>
                   </div>
                 </div>
               </a>
