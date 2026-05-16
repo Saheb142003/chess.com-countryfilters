@@ -1,6 +1,6 @@
 import { useState, useMemo, useEffect } from "react";
 import axios from "axios";
-import CountryFilter from "./components/CountryFilter";
+import SidebarFilters from "./components/SidebarFilters";
 import GameList from "./components/GameList";
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
@@ -11,6 +11,9 @@ function App() {
   const [selectedCountry, setSelectedCountry] = useState("");
   const [selectedResult, setSelectedResult] = useState("");
   const [selectedType, setSelectedType] = useState("");
+  const [selectedOpening, setSelectedOpening] = useState("");
+  const [selectedTimeRange, setSelectedTimeRange] = useState("all");
+  const [filterMode, setFilterMode] = useState("country"); // "country" or "opening"
   const [opponentQuery, setOpponentQuery] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -43,6 +46,8 @@ function App() {
     setLoading(true);
     setError("");
     setSelectedCountry("");
+    setSelectedOpening("");
+    setSelectedTimeRange("all");
     setSelectedResult("");
     setSelectedType("");
     setOpponentQuery("");
@@ -63,11 +68,24 @@ function App() {
   };
 
   const filteredGames = useMemo(() => {
-    let games = [];
+    let games = Object.values(data).flat();
+    
+    // Time Range Filter
+    const now = Math.floor(Date.now() / 1000);
+    if (selectedTimeRange === "week") {
+      games = games.filter(g => g.timestamp >= now - (7 * 24 * 60 * 60));
+    } else if (selectedTimeRange === "month") {
+      games = games.filter(g => g.timestamp >= now - (30 * 24 * 60 * 60));
+    } else if (selectedTimeRange === "3months") {
+      games = games.filter(g => g.timestamp >= now - (90 * 24 * 60 * 60));
+    }
+
     if (selectedCountry) {
-      games = data[selectedCountry] || [];
-    } else {
-      games = Object.values(data).flat();
+      games = games.filter(g => g.country === selectedCountry);
+    }
+
+    if (selectedOpening) {
+      games = games.filter(g => (g.baseOpening || g.opening) === selectedOpening);
     }
 
     if (selectedResult) {
@@ -90,7 +108,7 @@ function App() {
     }
 
     return games.sort((a, b) => b.timestamp - a.timestamp);
-  }, [data, selectedCountry, selectedResult, selectedType, opponentQuery]);
+  }, [data, selectedCountry, selectedOpening, selectedResult, selectedType, opponentQuery]);
 
   return (
     <div className="container">
@@ -134,10 +152,16 @@ function App() {
 
       {!loading && Object.keys(data).length > 0 && (
         <div className="main-layout">
-          <CountryFilter
+          <SidebarFilters
             countries={Object.keys(data)}
             selectedCountry={selectedCountry}
             setSelectedCountry={setSelectedCountry}
+            selectedOpening={selectedOpening}
+            setSelectedOpening={setSelectedOpening}
+            selectedTimeRange={selectedTimeRange}
+            setSelectedTimeRange={setSelectedTimeRange}
+            filterMode={filterMode}
+            setFilterMode={setFilterMode}
             selectedResult={selectedResult}
             setSelectedResult={setSelectedResult}
             selectedType={selectedType}

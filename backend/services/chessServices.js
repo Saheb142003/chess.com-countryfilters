@@ -41,8 +41,8 @@ async function getOpponentCountry(oppo) {
 export async function fetchGamesByCountry(username) {
   const archives = await getPlayerArchives(username);
   
-  // Fetch last 3 archives
-  const recentArchives = archives.slice(-3);
+  // Fetch last 6 archives (6 months of data)
+  const recentArchives = archives.slice(-6);
   const archivePromises = recentArchives.map(url => getGamesFromArchive(url));
   const gamesArrays = await Promise.all(archivePromises);
   const allGamesData = gamesArrays.flat();
@@ -103,6 +103,39 @@ export async function fetchGamesByCountry(username) {
       }
     }
     
+    // Intelligent Base Opening extraction
+    let baseOpening = opening;
+    const majorWords = ["Defense", "Game", "Opening", "Gambit", "System", "Attack", "Countergambit", "Counterattack", "Counter-Attack"];
+    
+    // Split into words and find the first major word
+    const words = opening.split(/\s+/);
+    let majorIdx = -1;
+    for (let i = 0; i < words.length; i++) {
+      // Clean word of punctuation for matching
+      const cleanWord = words[i].replace(/[:\(\)\[\]\-\d\.]/g, "");
+      if (majorWords.includes(cleanWord)) {
+        majorIdx = i;
+        break;
+      }
+    }
+
+    if (majorIdx !== -1) {
+      baseOpening = words.slice(0, majorIdx + 1).join(" ").replace(/[:\(\)\[\]\-\d\.]/g, "").trim();
+    } else {
+      // Fallback: take first 2-3 words or split by common punctuation
+      baseOpening = opening.split(/[:\(\d\-\[\]]/)[0].trim();
+    }
+
+    // Special case normalization
+    if (baseOpening.toLowerCase().includes("kings indian")) baseOpening = "Kings Indian Defense";
+    if (baseOpening.toLowerCase().includes("queens indian")) baseOpening = "Queens Indian Defense";
+    if (baseOpening.toLowerCase().includes("caro kann")) baseOpening = "Caro-Kann Defense";
+    if (baseOpening.toLowerCase().includes("sicilian")) baseOpening = "Sicilian Defense";
+    if (baseOpening.toLowerCase().includes("french")) baseOpening = "French Defense";
+    if (baseOpening.toLowerCase().includes("scandinavian")) baseOpening = "Scandinavian Defense";
+    if (baseOpening.toLowerCase().includes("ruy lopez")) baseOpening = "Ruy Lopez";
+    if (baseOpening.toLowerCase().includes("giuoco piano")) baseOpening = "Giuoco Piano";
+    
     allGames.push({
       opponent,
       country,
@@ -112,6 +145,7 @@ export async function fetchGamesByCountry(username) {
       ratingChange,
       timeClass,
       opening,
+      baseOpening,
       fen: game.fen,
       date: new Date(game.end_time * 1000).toLocaleDateString('en-GB', {
         day: '2-digit',
